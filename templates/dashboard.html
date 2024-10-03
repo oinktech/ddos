@@ -41,6 +41,16 @@
 <body>
     <div class="container">
         <h1>歡迎, {{ username }}!</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul class="flashed-messages">
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
         <h2>訪問管理</h2>
         <form method="POST" action="{{ url_for('visit') }}">
             <div class="form-group">
