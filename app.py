@@ -139,6 +139,11 @@ def logout():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('用戶名已被佔用，請選擇其他用戶名。', 'danger')
+            return redirect(url_for('register'))
+
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(username=form.username.data, password=hashed_password)
         db.session.add(new_user)
