@@ -53,15 +53,17 @@
             <button type="submit" class="btn btn-primary">註冊</button>
         </form>
         <p>已經有帳號? <a href="{{ url_for('login') }}">登入</a></p>
-        {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- 在login.html和register.html中 -->
+{% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        <ul>
+        <ul class="flashed-messages">
         {% for category, message in messages %}
             <li class="{{ category }}">{{ message }}</li>
         {% endfor %}
         </ul>
     {% endif %}
 {% endwith %}
+
 
     </div>
 </body>
