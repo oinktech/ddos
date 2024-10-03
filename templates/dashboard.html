@@ -7,6 +7,7 @@
     <input type="number" name="interval" placeholder="訪問間隔 (秒)" required>
     <button type="submit">提交</button>
 </form>
+
 <h3>已有數據</h3>
 <ul>
     {% for stat in stats %}
@@ -16,4 +17,9 @@
         </li>
     {% endfor %}
 </ul>
+
+<!-- 添加登出按钮 -->
+<form action="{{ url_for('logout') }}" method="POST">
+    <button type="submit">登出</button>
+</form>
 {% endblock %}
