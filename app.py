@@ -193,10 +193,12 @@ def unlock_system():
 def download_db():
     return send_file('users.db', as_attachment=True)
 
+
 if __name__ == '__main__':
-    if not os.path.exists('users.db'):
-        db.create_all()
-        # 初始化系統狀態
-        db.session.add(SystemStatus())
-        db.session.commit()
+    with app.app_context():  # Establish application context
+        if not os.path.exists('users.db'):
+            db.create_all()
+            # 初始化系統狀態
+            db.session.add(SystemStatus())
+            db.session.commit()
     app.run(port=10000, host='0.0.0.0', debug=True)
