@@ -63,12 +63,12 @@ class VisitForm(FlaskForm):
     interval = FloatField('訪問間隔時間（秒）', validators=[DataRequired()])
     submit = SubmitField('開始訪問')
 
-@app.route('/')
+@app.route('/dashboard')
 @login_required
 def home():
     visits = Visit.query.all()
     system_status = SystemStatus.query.first()
-    return render_template('index.html', visits=visits, username=current_user.username, is_locked=system_status.is_locked)
+    return render_template('dashboard.html', visits=visits, username=current_user.username, is_locked=system_status.is_locked)
 
 @app.route('/visit', methods=['POST'])
 @login_required
@@ -117,7 +117,16 @@ def login():
             return redirect(url_for('home'))
         flash('登入失敗，請檢查您的用戶名和密碼', 'danger')
     return render_template('login.html', form=form)
-
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.password == form.password.data:  # 使用適當的密碼雜湊方法
+            login_user(user)
+            return redirect(url_for('home'))
+        flash('登入失敗，請檢查您的用戶名和密碼', 'danger')
+    return render_template('login.html', form=form)
 @app.route('/logout')
 @login_required
 def logout():
