@@ -4,12 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, FloatField, SubmitField, PasswordField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, EqualTo
 import requests
 import threading
 import time
-import sqlite3
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # 加載環境變數
 load_dotenv()
@@ -48,6 +48,7 @@ def load_user(user_id):
 class RegisterForm(FlaskForm):
     username = StringField('用戶名', validators=[DataRequired(), Length(min=2, max=150)])
     password = PasswordField('密碼', validators=[DataRequired(), Length(min=6, max=150)])
+    confirm_password = PasswordField('確認密碼', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('註冊')
 
 # 登入表單
@@ -65,7 +66,7 @@ class VisitForm(FlaskForm):
 
 @app.route('/dashboard')
 @login_required
-def home():
+def dashboard():
     visits = Visit.query.all()
     system_status = SystemStatus.query.first()
     return render_template('dashboard.html', visits=visits, username=current_user.username, is_locked=system_status.is_locked)
@@ -94,9 +95,9 @@ def visit():
 
         threading.Thread(target=make_requests, args=(new_visit,)).start()
         flash('訪問開始!', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('dashboard'))
     flash('訪問失敗，請檢查輸入.', 'danger')
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 @app.route('/stop/<int:visit_id>', methods=['POST'])
 @login_required
@@ -105,20 +106,21 @@ def stop_visit(visit_id):
     db.session.delete(visit)
     db.session.commit()
     flash('訪問已停止!', 'success')
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and user.password == form.password.data:  # 使用適當的密碼雜湊方法
+        if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for('home'))
+            return redirect(url_for('dashboard'))
         flash('登入失敗，請檢查您的用戶名和密碼', 'danger')
     return render_template('login.html', form=form)
+
 @app.route('/', methods=['GET'])
-def home():
+def index():
     return render_template('index.html')
 
 @app.route('/logout')
@@ -131,7 +133,8 @@ def logout():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        new_user = User(username=form.username.data, password=form.password.data)
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        new_user = User(username=form.username.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         flash('註冊成功，請登入!', 'success')
@@ -196,4 +199,4 @@ if __name__ == '__main__':
         # 初始化系統狀態
         db.session.add(SystemStatus())
         db.session.commit()
-    app.run(port=10000, host='0.0.0.0',debug=True)
+    app.run(port=10000, host='0.0.0.0', debug=True)
