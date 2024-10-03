@@ -51,6 +51,13 @@ def login():
         flash('Invalid credentials')
     return render_template('login.html')
 
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()  # 登出用户
+    return redirect(url_for('login'))  # 重定向到登录页面
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
