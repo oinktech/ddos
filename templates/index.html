@@ -3,24 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登入</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>OinkTech - 網站介紹</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background: #333;
+            color: #fff;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .intro, .features {
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .feature-item {
+            flex: 1 1 calc(45% - 20px);
+            margin: 10px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-item i {
+            font-size: 40px;
+            color: #007BFF;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: #333;
+            color: #fff;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h2>登入</h2>
-        <form method="POST">
-            <div class="form-group">
-                <label for="username">用戶名</label>
-                <input type="text" class="form-control" name="username" required>
+    <header>
+        <h1>歡迎來到 OinkTech</h1>
+        <nav>
+            <ul>
+                <li><a href="/login">登入</a></li>
+                <li><a href="/register">註冊</a></li>
+                <li><a href="/dashboard">控制面板</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="intro">
+            <h2>關於我們</h2>
+            <p>OinkTech 是一個專注於網路技術學習的平台。我們提供多種功能，幫助用戶理解如何進行網路訪問、數據處理和自動化操作。</p>
+            <p>本網站旨在提供教育目的，任何使用行為均需遵循當地法律法規。</p>
+            <p>若您使用本網站進行任何違法活動，OinkTech 將不承擔任何責任。</p>
+        </section>
+
+        <section class="features">
+            <h2>網站功能</h2>
+            <div class="feature-item">
+                <i class="fas fa-globe"></i>
+                <h3>網路訪問</h3>
+                <p>我們的系統允許用戶設定網址及訪問次數，進行自動網路請求。</p>
             </div>
-            <div class="form-group">
-                <label for="password">密碼</label>
-                <input type="password" class="form-control" name="password" required>
+            <div class="feature-item">
+                <i class="fas fa-user"></i>
+                <h3>用戶管理</h3>
+                <p>使用者可透過註冊和登入功能管理個人資料。</p>
             </div>
-            <button type="submit" class="btn btn-primary">登入</button>
-        </form>
-        <p>還沒有帳號? <a href="{{ url_for('register') }}">註冊</a></p>
-    </div>
+            <div class="feature-item">
+                <i class="fas fa-lock"></i>
+                <h3>安全性</h3>
+                <p>我們提供管理員登錄功能，以保護系統安全，避免未經授權訪問。</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-download"></i>
+                <h3>數據下載</h3>
+                <p>用戶可以下載自己的訪問記錄和數據，以便後續分析。</p>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 OinkTech. 版權所有。<br>網站僅供教育用途。</p>
+    </footer>
 </body>
 </html>
