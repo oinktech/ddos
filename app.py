@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
 import os
-import sys
 
 load_dotenv()
 
@@ -28,9 +27,10 @@ class Stats(db.Model):
     interval = db.Column(db.Integer, nullable=False)
 
 def create_database():
-    if not os.path.exists('users.db'):
-        db.create_all()
-        print("Database created.")
+    with app.app_context():
+        if not os.path.exists('users.db'):
+            db.create_all()
+            print("Database created.")
 
 # Create the database if it doesn't exist
 create_database()
