@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首頁</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>歡迎, {{ username }}!</h1>
+        <h2>訪問管理</h2>
+        <form method="POST" action="{{ url_for('visit') }}">
+            <div class="form-group">
+                <label for="url">網址</label>
+                <input type="text" class="form-control" name="url" required>
+            </div>
+            <div class="form-group">
+                <label for="num_visits">訪問次數</label>
+                <input type="number" class="form-control" name="num_visits" required>
+            </div>
+            <div class="form-group">
+                <label for="interval">訪問間隔時間（秒）</label>
+                <input type="number" class="form-control" name="interval" step="0.1" required>
+            </div>
+            <button type="submit" class="btn btn-primary">開始訪問</button>
+        </form>
+        <h3>當前訪問網址</h3>
+        <ul>
+            {% for visit in visits %}
+                <li>
+                    {{ visit.url }} - 訪問次數: {{ visit.num_visits }} - 間隔時間: {{ visit.interval }}秒
+                    <form method="POST" action="{{ url_for('stop_visit', visit_id=visit.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">停止訪問</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('logout') }}" class="btn btn-warning">登出</a>
+        <a href="{{ url_for('admin') }}" class="btn btn-secondary">管理員登入</a>
+    </div>
+</body>
+</html>
