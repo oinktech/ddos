@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
 import os
+import sys
 
 load_dotenv()
 
@@ -26,7 +27,13 @@ class Stats(db.Model):
     visits = db.Column(db.Integer, nullable=False)
     interval = db.Column(db.Integer, nullable=False)
 
-db.create_all()
+def create_database():
+    if not os.path.exists('users.db'):
+        db.create_all()
+        print("Database created.")
+
+# Create the database if it doesn't exist
+create_database()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -105,4 +112,4 @@ def download():
     return send_file('users.db', as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=10000)
