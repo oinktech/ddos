@@ -111,7 +111,9 @@ def index():
 @app.route('/download')
 @login_required
 def download():
-    return send_file('users.db', as_attachment=True)
-
+    db_path = os.path.join(app.root_path, 'users.db')  # 使用绝对路径
+    if not os.path.exists(db_path):
+        return "Database not found!", 404  # 如果文件不存在，返回404
+    return send_file(db_path, as_attachment=True)  # 发送数据库文件
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=10000)
