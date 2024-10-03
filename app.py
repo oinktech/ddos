@@ -100,11 +100,13 @@ def admin():
 def update():
     return render_template('update.html')
 
+
+
 @app.route('/')
 def index():
     if session.get('site_status', True) == False:
         return render_template('update.html')
-    return "Welcome to the main page!"
+    return render_template('index.html')
 
 @app.route('/download')
 @login_required
