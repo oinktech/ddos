@@ -69,6 +69,9 @@ class VisitForm(FlaskForm):
 def dashboard():
     visits = Visit.query.all()
     system_status = SystemStatus.query.first()
+    if system_status and system_status.is_locked:
+        flash('系統已鎖定，請稍後再試。', 'warning')
+        return redirect(url_for('logout'))  # 或者重定向到其他安全頁面
     return render_template('dashboard.html', visits=visits, username=current_user.username, is_locked=system_status.is_locked)
 
 @app.route('/visit', methods=['POST'])
@@ -96,6 +99,7 @@ def visit():
         threading.Thread(target=make_requests, args=(new_visit,)).start()
         flash('訪問開始!', 'success')
         return redirect(url_for('dashboard'))
+    
     flash('訪問失敗，請檢查輸入.', 'danger')
     return redirect(url_for('dashboard'))
 
@@ -115,6 +119,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
+            flash('登入成功，歡迎回來！', 'success')
             return redirect(url_for('dashboard'))
         flash('登入失敗，請檢查您的用戶名和密碼', 'danger')
     return render_template('login.html', form=form)
@@ -127,6 +132,7 @@ def index():
 @login_required
 def logout():
     logout_user()
+    flash('您已成功登出！', 'info')
     return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -192,7 +198,6 @@ def unlock_system():
 @login_required
 def download_db():
     return send_file('users.db', as_attachment=True)
-
 
 if __name__ == '__main__':
     with app.app_context():  # Establish application context
