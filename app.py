@@ -117,16 +117,10 @@ def login():
             return redirect(url_for('home'))
         flash('登入失敗，請檢查您的用戶名和密碼', 'danger')
     return render_template('login.html', form=form)
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user and user.password == form.password.data:  # 使用適當的密碼雜湊方法
-            login_user(user)
-            return redirect(url_for('home'))
-        flash('登入失敗，請檢查您的用戶名和密碼', 'danger')
-    return render_template('login.html', form=form)
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('index.html')
+
 @app.route('/logout')
 @login_required
 def logout():
